@@ -143,15 +143,20 @@
             </div>
 
             @if($post->exists && $post->status !== 'published')
-                <form method="POST" action="{{ route('writer.posts.destroy', $post) }}"
-                      onsubmit="return confirm('লেখাটি মুছে ফেলবেন?')">
-                    @csrf @method('DELETE')
-                    <button class="btn btn-outline-danger w-100">
-                        <i class="bi bi-trash me-1"></i>লেখাটি মুছুন
-                    </button>
-                </form>
+                <button type="button"
+                        onclick="if(confirm('লেখাটি মুছে ফেলবেন?')){document.getElementById('writer-delete-form').submit();}"
+                        class="btn btn-outline-danger w-100">
+                    <i class="bi bi-trash me-1"></i>লেখাটি মুছুন
+                </button>
             @endif
         </div>
     </div>
 </form>
+
+{{-- Delete form OUTSIDE main form --}}
+@if($post->exists && $post->status !== 'published')
+<form id="writer-delete-form" method="POST" action="{{ route('writer.posts.destroy', $post) }}" class="d-none">
+    @csrf @method('DELETE')
+</form>
+@endif
 @endsection

@@ -171,11 +171,8 @@
             </div>
 
             @if($post->exists)
-                <form id="delete-form" method="POST" action="{{ route('admin.posts.destroy', $post) }}">
-                    @csrf @method('DELETE')
-                </form>
-                <button type="submit" form="delete-form"
-                        onclick="return confirm('লেখাটি মুছে ফেলবেন?')"
+                <button type="button"
+                        onclick="if(confirm('লেখাটি মুছে ফেলবেন?')){document.getElementById('delete-form').submit();}"
                         class="btn btn-outline-danger w-100">
                     <i class="bi bi-trash me-1"></i>লেখাটি মুছুন
                 </button>
@@ -183,4 +180,11 @@
         </div>
     </div>
 </form>
+
+{{-- Delete form OUTSIDE main form --}}
+@if($post->exists)
+<form id="delete-form" method="POST" action="{{ route('admin.posts.destroy', $post) }}" class="d-none">
+    @csrf @method('DELETE')
+</form>
+@endif
 @endsection
