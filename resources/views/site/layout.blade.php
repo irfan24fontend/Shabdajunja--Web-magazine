@@ -35,58 +35,86 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-<header class="site-header sticky-top bg-white border-bottom">
-    <div class="container d-flex align-items-center justify-content-between gap-3" style="height:68px">
-        <a href="{{ route('home') }}" class="site-brand">শব্দকুঞ্জ<small>সাহিত্যের অনলাইন আঙিনা</small></a>
-
-        <nav class="nav-site d-none d-lg-flex gap-4">
-            <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'on' : '' }}">হোম</a>
-            @foreach($navCategories as $c)
-                <a href="{{ route('category.show', $c) }}" class="{{ request()->is('category/' . $c->slug) ? 'on' : '' }}">{{ $c->name }}</a>
-            @endforeach
-        </nav>
-
-        <div class="d-flex align-items-center gap-2">
-            <form action="{{ route('search') }}" class="d-none d-md-block">
-                <input name="q" value="{{ request('q') }}" placeholder="খুঁজুন..." class="form-control form-control-sm rounded-pill bg-light border-0 px-3" style="width:170px">
-            </form>
-            @auth
-                @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-brand">Admin</a>
-                @endif
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-light rounded-pill d-flex align-items-center gap-2 ps-1" data-bs-toggle="dropdown">
-                        <img src="{{ auth()->user()->avatar_url }}" class="rounded-circle" width="26" height="26" alt="">
-                        <span class="d-none d-sm-inline">{{ auth()->user()->name }}</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                        <li><a class="dropdown-item" href="{{ route('writer.posts.index') }}">আমার লেখা</a></li>
-                        <li><a class="dropdown-item" href="{{ route('writer.posts.create') }}">নতুন লেখা</a></li>
-                        <li><a class="dropdown-item" href="{{ route('profile.edit') }}">প্রোফাইল</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><form method="POST" action="{{ route('logout') }}">@csrf<button class="dropdown-item text-danger">Logout</button></form></li>
-                    </ul>
-                </div>
-            @else
-                <a href="{{ route('login') }}" class="btn btn-sm btn-light">Login</a>
-                <a href="{{ route('register') }}" class="btn btn-sm btn-brand d-none d-sm-inline-block">Register</a>
-            @endauth
-            <button class="btn btn-light d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobMenu" aria-label="menu"><i class="bi bi-list fs-5"></i></button>
+<header class="site-header sticky-top">
+    <div class="site-topline">
+        <div class="container d-flex justify-content-between align-items-center">
+            <span>সাহিত্য · সংস্কৃতি · মনন</span>
+            <span class="d-none d-sm-inline">শব্দের ভেতরেই আমাদের বসবাস</span>
         </div>
     </div>
+
+    <div class="site-masthead bg-white">
+        <div class="container site-masthead-inner">
+            <a href="{{ route('home') }}" class="site-brand" aria-label="শব্দকুঞ্জ প্রচ্ছদ">
+                <img src="https://i.postimg.cc/Y0jJNnsx/Swabdakunja-Logo-01-(1).png"
+                     class="site-brand-logo" alt="শব্দকুঞ্জ — সাহিত্যের অনলাইন আঙিনা">
+            </a>
+
+            <div class="site-masthead-note d-none d-lg-block">
+                <span class="site-note-rule"></span>
+                <span>পড়ি · লিখি · ভাবি</span>
+                <span class="site-note-rule"></span>
+            </div>
+
+            <div class="site-actions">
+                <form action="{{ route('search') }}" class="site-search d-none d-md-flex">
+                    <i class="bi bi-search" aria-hidden="true"></i>
+                    <input name="q" value="{{ request('q') }}" placeholder="লেখা খুঁজুন..." aria-label="লেখা খুঁজুন">
+                </form>
+                @auth
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-brand d-none d-sm-inline-flex">অ্যাডমিন</a>
+                    @endif
+                    <div class="dropdown">
+                        <button class="btn btn-sm site-user-button dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ auth()->user()->avatar_url }}" class="rounded-circle" width="28" height="28" alt="">
+                            <span class="d-none d-sm-inline">{{ auth()->user()->name }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+                            <li><a class="dropdown-item" href="{{ route('writer.posts.index') }}">আমার লেখা</a></li>
+                            <li><a class="dropdown-item" href="{{ route('writer.posts.create') }}">নতুন লেখা</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">প্রোফাইল</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><form method="POST" action="{{ route('logout') }}">@csrf<button class="dropdown-item text-danger">লগআউট</button></form></li>
+                        </ul>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="site-login d-none d-sm-inline-flex">লগইন</a>
+                    <a href="{{ route('register') }}" class="btn btn-sm btn-brand site-join">লেখক হোন <i class="bi bi-arrow-up-right"></i></a>
+                @endauth
+                <button class="site-menu-toggle d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobMenu" aria-label="মেনু খুলুন"><i class="bi bi-list"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="site-category-bar d-none d-lg-block" aria-label="প্রধান বিভাগ">
+        <div class="container">
+            <div class="site-category-nav">
+                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'on' : '' }}"><i class="bi bi-house-door"></i> প্রচ্ছদ</a>
+                @foreach($navCategories as $c)
+                    <a href="{{ route('category.show', $c) }}" class="{{ request()->is('category/' . $c->slug) ? 'on' : '' }}">{{ $c->name }}</a>
+                @endforeach
+            </div>
+        </div>
+    </nav>
 </header>
 
-<div class="offcanvas offcanvas-start" id="mobMenu" style="background:var(--brand-900);color:#fff;width:280px">
+<div class="offcanvas offcanvas-end site-mobile-menu" tabindex="-1" id="mobMenu" aria-labelledby="mobMenuLabel">
     <div class="offcanvas-header">
-        <span class="font-serif fs-4 fw-bold">শব্দকুঞ্জ</span>
-        <button class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        <a href="{{ route('home') }}" class="mobile-menu-brand" id="mobMenuLabel" aria-label="শব্দকুঞ্জ প্রচ্ছদ">
+            <img src="https://i.postimg.cc/Y0jJNnsx/Swabdakunja-Logo-01-(1).png" alt="শব্দকুঞ্জ" class="mobile-menu-logo">
+        </a>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="বন্ধ করুন"></button>
     </div>
     <div class="offcanvas-body">
-        <form action="{{ route('search') }}" class="mb-3"><input name="q" class="form-control" placeholder="খুঁজুন..."></form>
-        <a href="{{ route('home') }}" class="d-block py-2 text-white text-decoration-none">হোম</a>
+        <form action="{{ route('search') }}" class="site-mobile-search mb-3"><i class="bi bi-search"></i><input name="q" value="{{ request('q') }}" placeholder="লেখা খুঁজুন..." aria-label="লেখা খুঁজুন"></form>
+        <a href="{{ route('home') }}" class="site-mobile-link {{ request()->routeIs('home') ? 'on' : '' }}"><i class="bi bi-house-door"></i> প্রচ্ছদ</a>
         @foreach($navCategories as $c)
-            <a href="{{ route('category.show', $c) }}" class="d-block py-2 text-white text-decoration-none">{{ $c->name }}</a>
+            <a href="{{ route('category.show', $c) }}" class="site-mobile-link {{ request()->is('category/' . $c->slug) ? 'on' : '' }}">{{ $c->name }}<i class="bi bi-arrow-up-left"></i></a>
         @endforeach
+        @guest
+            <div class="site-mobile-account"><a href="{{ route('login') }}">লগইন</a><a href="{{ route('register') }}" class="btn btn-brand">লেখক হোন</a></div>
+        @endguest
     </div>
 </div>
 
